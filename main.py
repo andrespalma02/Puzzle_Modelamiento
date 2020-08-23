@@ -107,27 +107,41 @@ class Imagen(Cuadro):
         pass
 
 
-'''
-for n in range (n*n)
 pygame.init()
 cuadroVacio = CuadroVacio(Posicion(320, 320), "CuadroVacio.png")
+listaimg = list()
+imagen = pygame.image.load("plantilla.png")
+
 DIMENSION = 1000, 500
 pantalla_juego = pygame.display.set_mode(DIMENSION)
 titulo_juego = pygame.display.set_caption('I <3 PUZZLE')
 clock = pygame.time.Clock()
-while True:
-    pantalla_juego.fill((255, 255, 255))
-    cuadroVacio.dibujar(pantalla_juego)
-    pygame.display.update()
-'''
+
 nivel = 1
 n = 2 + nivel
+dim = int(420 / n)
 listapos = list()
 listarand = list()
 for i in range(n):
     for j in range(n):
-        listapos.append((int(40 + j * (420 / n)), int(40 + (i) * (420 / n))))
-        listarand.append((int(40 + j * (420 / n)), int(40 + (i) * (420 / n))))
+        posx = int(40 + j * dim)
+        posy = int(40 + i * dim)
+        listapos.append((posx, posy))
+        listarand.append((posx, posy))
+        imaux = pygame.Surface((dim, dim))
+        imaux.blit(imagen, (posx, posy), (posx, posy, dim, dim))
+        listaimg.append(imaux)
+
 random.shuffle(listarand)
-print(listapos)
-print(listarand)
+
+iniciado = True
+pantalla_juego.fill((255, 255, 255))
+
+for elemento in range(len(listaimg)):
+    pantalla_juego.blit(listaimg[elemento], listapos[elemento])
+    cuadroVacio.dibujar(pantalla_juego)
+while iniciado:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            iniciado = False
+    pygame.display.update()

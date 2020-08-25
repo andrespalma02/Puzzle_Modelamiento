@@ -129,17 +129,25 @@ class ListaFragmentoImagen():
     def accederLista(self):
         return self.listafragmentos
 
+class Contador:
+    def __init__(self):
+        self.numeroMovimientos=int(0)
+
+    def aumentar(self):
+        return self.numeroMovimientos+1
+
 
 class Colision:
     def __init__(self, imagen):
         self.imagen = imagen
         self.listafragmentos=ListaFragmentoImagen()
-
+        self.contador= Contador()
 
     def verificarColision(self, posicion):
         for pos in self.listafragmentos.accederLista():
             if pos==posicion:
                 return True
+                self.contador.aumentar()
         return False
 
 

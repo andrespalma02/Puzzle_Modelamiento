@@ -113,6 +113,23 @@ class Imagen(Cuadro):
     def actualizarPosicion(self):
         pass
 
+class Colision:
+    def __init__(self, imagen):
+        self.imagen = imagen
+        self.cuadroVacio = CuadroVacio()
+
+
+    def verificarColision(self, posicion):
+        pos=cuadroVacio.posicion.getPosicion
+        if posicion.getPosicion()[0]+140==pos[0]:
+            return pos
+        if posicion.getPosicion()[0]-140==pos[0]:
+            return pos
+        if posicion.getPosicion()[1]+140==pos[0]:
+            return pos
+        if posicion.getPosicion()[1]-140==pos[0]:
+            return pos
+
 
 
 nivel = 1       #Se selecciona el nivel

@@ -116,23 +116,31 @@ class Imagen(Cuadro):
     def actualizarPosicion(self):
         pass
 
+class ListaFragmentoImagen():
+    def __init__(self):
+        self.listafragmentos=list()
+
+    def agregar(self,fragmentoimagen):
+        pass
+
+    def quitar(self):
+        pass
+
+    def accederLista(self):
+        return self.listafragmentos
+
+
 class Colision:
     def __init__(self, imagen):
         self.imagen = imagen
-        self.cuadroVacio = CuadroVacio()
+        self.listafragmentos=ListaFragmentoImagen()
 
 
     def verificarColision(self, posicion):
-        pos=cuadroVacio.posicion.getPosicion
-        if posicion.getPosicion()[0]+DIM==pos[0]:
-            return pos
-        if posicion.getPosicion()[0]-DIM==pos[0]:
-            return pos
-        if posicion.getPosicion()[1]+DIM==pos[0]:
-            return pos
-        if posicion.getPosicion()[1]-DIM==pos[0]:
-            return pos
-
+        for pos in self.listafragmentos.accederLista():
+            if pos==posicion:
+                return True
+        return False
 
 
 listapos = list()   #Se crea una lista con las posiciones correctas de los fragmentos

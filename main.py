@@ -4,6 +4,9 @@ import random
 
 import pygame
 
+NIVEL=1
+N=NIVEL+2
+DIM=int(420/N)
 
 class Listener:
     @staticmethod
@@ -50,7 +53,7 @@ class CuadroVacio(Cuadro):
         self.imagen = pygame.image.load(imagen)
 
     def dibujar(self, fondo):
-        dimension = (140, 140)
+        dimension = (DIM, DIM)
         fondo.blit(pygame.transform.scale(self.imagen, dimension), self.posicion.getPosicion())
 
     def mover(self,rd):
@@ -78,7 +81,7 @@ class FragmentoImagen(Cuadro):
         self.imagen = pygame.image.load(imagen)
 
     def dibujar(self, fondo):
-        dimension = (140, 140)
+        dimension = (DIM, DIM)
         fondo.blit(pygame.transform.scale(self.imagen, dimension), self.posicion.getPosicion())
 
     def mover(self):
@@ -121,25 +124,22 @@ class Colision:
 
     def verificarColision(self, posicion):
         pos=cuadroVacio.posicion.getPosicion
-        if posicion.getPosicion()[0]+140==pos[0]:
+        if posicion.getPosicion()[0]+DIM==pos[0]:
             return pos
-        if posicion.getPosicion()[0]-140==pos[0]:
+        if posicion.getPosicion()[0]-DIM==pos[0]:
             return pos
-        if posicion.getPosicion()[1]+140==pos[0]:
+        if posicion.getPosicion()[1]+DIM==pos[0]:
             return pos
-        if posicion.getPosicion()[1]-140==pos[0]:
+        if posicion.getPosicion()[1]-DIM==pos[0]:
             return pos
 
 
 
-nivel = 1       #Se selecciona el nivel
-n = 2 + nivel   #se ingresa las dimensiones de los fragmentos del rompecabezas
-dim = int(420 / n)  #Se asigna la dimension de los fragmentos en base al nivel actual
 listapos = list()   #Se crea una lista con las posiciones correctas de los fragmentos
 listarand = list()  #Se crea una lista con las posiciones desordenadas de los fragmentos
 
 pygame.init()
-cuadroVacio = CuadroVacio(Posicion(40 + (n - 1) * dim, 40 + (n - 1) * dim), "CuadroVacio.png") #Creacion del objeto cuadro vacio
+cuadroVacio = CuadroVacio(Posicion(40 + (N - 1) * DIM, 40 + (N - 1) * DIM), "CuadroVacio.png") #Creacion del objeto cuadro vacio
 listaimg = list() #Se crea una lista con los fragmentos de la imagen
 imagen = pygame.image.load("plantilla.png") #Se carga la imagen completa para despues hacerla fragmentos
 
@@ -148,14 +148,14 @@ pantalla_juego = pygame.display.set_mode(DIMENSION) #Se crea la ventana con las 
 titulo_juego = pygame.display.set_caption('I <3 PUZZLE')    #Se inserta un titulo a la ventana creada
 clock = pygame.time.Clock()
 
-for i in range(n):
-    for j in range(n):
-        posx = int(40 + j * dim)
-        posy = int(40 + i * dim)
+for i in range(N):
+    for j in range(N):
+        posx = int(40 + j * DIM)
+        posy = int(40 + i * DIM)
         listapos.append((posx, posy)) #Se guardan las posiciones correctas de los fragmentos
         listarand.append((posx, posy)) #Se guardan posiciones randomicas para los fragmentos
-        imaux = pygame.Surface((dim, dim)) #Se crea una superficie
-        imaux.blit(imagen, (0, 0), (posx -40, posy-40 , dim, dim))
+        imaux = pygame.Surface((DIM, DIM)) #Se crea una superficie
+        imaux.blit(imagen, (0, 0), (posx -40, posy-40 , DIM, DIM))
         listaimg.append(imaux)
 
 random.shuffle(listarand) #se generan posiciones randomicas de los fragmentos
@@ -176,7 +176,7 @@ while iniciado:
 
         cuadroVacio.posicion.getPosicion()
         print(cuadroVacio.posicion.getPosicion())
-        cuadroVacio.mover(140)
+        cuadroVacio.mover(DIM)
 
         #Comparar las colisiones
         for cuadrofragmento in listapos:

@@ -60,22 +60,22 @@ class CuadroVacio(Cuadro):
 
     def dibujar(self, fondo):
         dimension = (DIM, DIM)
-        fondo.blit(pygame.transform.scale(self.imagen, dimension), (self.posicion.getX(), self.posicion.getY()))
+        fondo.blit(pygame.transform.scale(self.imagen, dimension),
+                   (self.posicion.getX(), self.posicion.getY()))
 
-    def mover(self,colision):
+    def mover(self, colision):
         keys = Listener.detectar()
         x = self.posicion.getX()
         y = self.posicion.getY()
 
         if keys[pygame.K_LEFT]:
-            colision.verificarColision(x-DIM)
+            colision.verificarColision((x - DIM, y))
         if keys[pygame.K_RIGHT]:
-            colision.verificarColision(x+DIM)
+            colision.verificarColision((x + DIM, y))
         if keys[pygame.K_UP]:
-            colision.verificarColision(y-DIM)
+            colision.verificarColision((x, y - DIM))
         if keys[pygame.K_DOWN]:
-            colision.verificarColision(y+DIM)
-
+            colision.verificarColision((x, y + DIM))
 
 
 class FragmentoImagen(Cuadro):
@@ -91,41 +91,30 @@ class FragmentoImagen(Cuadro):
                    (self.posicionActual.getX(), self.posicionActual.getY()))
 
     def mover(self):
-        keys = Listener.detectar()
-        x, y = self.posicion.getPosicion()
-        if keys[pygame.K_RIGHT]:
-            self.posicion.x -= 10
-            pygame.time.delay(150)
-        if keys[pygame.K_DOWN]:
-            self.posicion.x -= 10
-            pygame.time.delay(150)
-        if keys[pygame.K_UP]:
-            self.posicion.x -= 10
-            pygame.time.delay(150)
-        if keys[pygame.K_LEFT]:
-            self.posicion.x -= 10
-            pygame.time.delay(150)
+        pass
 
     def getPosicionActual(self):
-        return self.posicionActual
+        (x, y) = self.posicionActual.getX(), self.posicionActual.getY()
+        return (x, y)
 
-    def setPosicionActual(self,posicion):
-        self.posicionActual=posicion
+    def setPosicionActual(self, posicion):
+        self.posicionActual = posicion
 
 
 class Imagen(Cuadro):
-    def __init__(self, posicion, imagen):
-        self._Cuadro__posicion = posicion
-        self.imagen = self.dibujar(imagen)
+    def __init__(self):
+        self._Cuadro__posicion = None
+        self.imagen = None
         self.dimension = DIM
         self.lista_cuadros = list()
         self.cuadro_vacio = None
 
     def mover(self):
-        self.cuadro_vacio.mover()
+        self.cuadro_vacio.mover(colision)
 
-    def dibujar(self, imagen):
-        return pygame.image.load(imagen)
+    def dibujar(self, posicion, imagen):
+        self.imagen = pygame.image.load(imagen)
+        self._Cuadro__posicion = posicion
 
     def descomponer(self):
         listaimg = list()
@@ -143,9 +132,9 @@ class Imagen(Cuadro):
                 listaimg.append(imaux)
         random.shuffle(listarand)
         for i in range(len(listapos)):
-            if listarand[i] == listapos[len(listapos)-1]:
-                self.cuadro_vacio=\
-                    CuadroVacio(Posicion(listarand[i][0],listarand[i][0]), "CuadroVacio.png")
+            if listarand[i] == listapos[len(listapos) - 1]:
+                self.cuadro_vacio = \
+                    CuadroVacio(Posicion(listarand[i][0], listarand[i][0]), "CuadroVacio.png")
             else:
                 self.agregarCuadro(FragmentoImagen(
                     Posicion(listapos[i][0], listapos[i][1]),
@@ -160,13 +149,19 @@ class Imagen(Cuadro):
     def agregarCuadro(self, fragmentoimagen):
         self.lista_cuadros.append(fragmentoimagen)
 
-    def intercambiar(self,posicion):
+    def intercambiar(self, posicion):
         for i in range(len(self.lista_cuadros)):
-            if self.lista_cuadros[i].posicion.getX()==posicion[0] and self.lista_cuadros[i].posicion.getY()==posicion[1]:
+            print((self.lista_cuadros[i].posicion.getX() == posicion[0]) and (self.lista_cuadros[i].posicion.getY() == \
+                                                                              posicion[1]))
+            if (self.lista_cuadros[i].posicion.getX() == posicion[0]) and (self.lista_cuadros[i].posicion.getY() == \
+                                                                           posicion[1]):
                 self.lista_cuadros[i].posicion.setX(self.cuadro_vacio.posicion.getX())
                 self.lista_cuadros[i].posicion.setY(self.cuadro_vacio.posicion.getX())
         self.cuadro_vacio.posicion.setX(posicion[0])
         self.cuadro_vacio.posicion.setY(posicion[1])
+
+    def getLista(self):
+        return self.lista_cuadros
 
 
 class Contador:
@@ -179,12 +174,13 @@ class Contador:
 
 class Colision:
     def __init__(self, contador, imagen):
-        self.imagen=imagen
+        self.imagen = imagen
         self.contador = contador
 
     def verificarColision(self, posicion):
-        for pos in self.imagen.lista_cuadros:
-            if pos.getPosicionActual == posicion:
+
+        for pos in self.imagen.getLista():
+            if pos.getPosicionActual() == posicion:
                 self.contador.aumentar()
                 self.imagen.intercambiar(posicion)
 
@@ -195,43 +191,27 @@ class Puntaje:
 
 
 class Puzzle:
-    def __init__(self,imagen):
-        self.imagen = imagen
 
-    def iniciarJuego(self):
+    def iniciarJuego(self, imagen):
         pygame.init()
-        pantalla_juego = pygame.display.set_mode(DIMENSION)  # Se crea la ventana con las dimensiones especificas
-        titulo_juego = pygame.display.set_caption('I <3 PUZZLE')  # Se inserta un titulo a la ventana creada
-        imagen.descomponer()
-        clock = pygame.time.Clock()
-        iniciado = True
-        while iniciado:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    iniciado = False
-                pantalla_juego.fill((255, 255, 255))  # Dar un color blanco a la pantalla
-                imagen.actualizarImagen(pantalla_juego)
-                pygame.display.update()
+        imagen.dibujar(Posicion(0, 0), "plantilla.png")
 
 
-
-
-imagen = Imagen(Posicion(0, 0), "plantilla.png")
-contador=Contador()
-puzzle = Puzzle(imagen)
-colision = Colision(contador,imagen)
-puzzle.iniciarJuego()
-
-'''
- # Comparar las colisiones
-        for cuadrofragmento in listapos:
-            if cuadroVacio.posicion.getPosicion() == cuadrofragmento:
-                print("COLISION")
-                auxiliar = cuadroVacio.posicion.getPosicion()
-                cuadroVacio.posicion.actualizar(cuadrofragmento[0], cuadrofragmento[1])
-                cuadrofragmento = auxiliar
-
-            else:
-                pass
-
-'''
+imagen = Imagen()
+contador = Contador()
+puzzle = Puzzle()
+puzzle.iniciarJuego(imagen)
+colision = Colision(contador, imagen)
+pantalla_juego = pygame.display.set_mode(DIMENSION)  # Se crea la ventana con las dimensiones especificas
+titulo_juego = pygame.display.set_caption('I <3 PUZZLE')  # Se inserta un titulo a la ventana creada
+imagen.descomponer()
+clock = pygame.time.Clock()
+iniciado = True
+while iniciado:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            iniciado = False
+        pantalla_juego.fill((255, 255, 255))  # Dar un color blanco a la pantalla
+        imagen.mover()
+        imagen.actualizarImagen(pantalla_juego)
+        pygame.display.update()

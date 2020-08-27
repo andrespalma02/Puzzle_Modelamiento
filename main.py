@@ -163,14 +163,12 @@ class Imagen(Cuadro):
 
 class Contador:
     def __init__(self, puntaje):
-        self.numeroMovimientos = int(1)
+        self.numeroMovimientos = int(0)
         self.verificacion = verificacion
 
     def aumentar(self):
-        print(self.numeroMovimientos)
         self.numeroMovimientos += 1
         verificacion.verificarCondiciones(self.numeroMovimientos)
-
 
 
 class Colision:
@@ -187,8 +185,9 @@ class Colision:
 
 
 class Verificacion:
-    def __init__(self, imagen):
+    def __init__(self, imagen, puntaje):
         self.imagen = imagen
+        self.imagen = puntaje
 
     def verificarCondiciones(self, numeroMovimientos):
         cont = 0
@@ -198,8 +197,17 @@ class Verificacion:
                     == elemento.getPosicionActual()):
                 cont += 1
         if cont == len(imagen.getLista()):
-            print("GANASTE EN", str(numeroMovimientos))
+            self.puntaje.calcularPuntaje(numeroMovimientos)
 
+
+class Puntaje:
+
+    def __init__(self, puzzle):
+        self.puzzle = puzzle
+        self.puntajeFinal = 0
+
+    def calcularPuntaje(self, numeroMovimientos):
+        self.puntajeFinal = int(100000 / numeroMovimientos)
 
 
 class Puzzle:

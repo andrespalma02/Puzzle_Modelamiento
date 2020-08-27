@@ -222,7 +222,7 @@ class Puzzle:
     def iniciarJuego(self, imagen):
         pygame.init()
         clock = pygame.time.Clock()
-        imagen.dibujar(Posicion(0, 0), "ImagenFondo.png")
+        imagen.dibujar(Posicion(0, 0), "ImagenMonitor.png")
         imagen.descomponer()
 
     def finalizarJuego(self, ventana):

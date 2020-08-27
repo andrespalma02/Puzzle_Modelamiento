@@ -151,12 +151,10 @@ class Imagen(Cuadro):
 
     def intercambiar(self, posicion):
         for i in range(len(self.lista_cuadros)):
-            print((self.lista_cuadros[i].posicion.getX() == posicion[0]) and (self.lista_cuadros[i].posicion.getY() == \
-                                                                              posicion[1]))
-            if (self.lista_cuadros[i].posicion.getX() == posicion[0]) and (self.lista_cuadros[i].posicion.getY() == \
-                                                                           posicion[1]):
-                self.lista_cuadros[i].posicion.setX(self.cuadro_vacio.posicion.getX())
-                self.lista_cuadros[i].posicion.setY(self.cuadro_vacio.posicion.getX())
+            if (self.lista_cuadros[i].posicion.getX() == posicion[0])\
+                    and (self.lista_cuadros[i].posicion.getY() ==posicion[1]):
+                self.lista_cuadros[i].setPosicionActual(Posicion(self.cuadro_vacio.posicion.getX(),
+                                                                 self.cuadro_vacio.posicion.getY()))
         self.cuadro_vacio.posicion.setX(posicion[0])
         self.cuadro_vacio.posicion.setY(posicion[1])
 

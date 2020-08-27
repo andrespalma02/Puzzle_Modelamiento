@@ -187,7 +187,7 @@ class Colision:
 class Verificacion:
     def __init__(self, imagen, puntaje):
         self.imagen = imagen
-        self.imagen = puntaje
+        self.puntaje = puntaje
 
     def verificarCondiciones(self, numeroMovimientos):
         cont = 0
@@ -214,25 +214,29 @@ class Puzzle:
 
     def iniciarJuego(self, imagen):
         pygame.init()
+        clock = pygame.time.Clock()
         imagen.dibujar(Posicion(0, 0), "Imagen.png")
+        imagen.descomponer()
 
+    def finalizarJuego(self, ventana):
+        ventana.blit(pygame.image.load("Imagen.png"),(0,0))
 
 puzzle = Puzzle()
 imagen = Imagen()
-puzzle.iniciarJuego(imagen)
-imagen.descomponer()
-verificacion = Verificacion(imagen)
+puntaje = Puntaje(puzzle)
+verificacion = Verificacion(imagen,puntaje)
 contador = Contador(verificacion)
 colision = Colision(contador, imagen)
+puzzle.iniciarJuego(imagen)
 
 pantalla_juego = pygame.display.set_mode(DIMENSION)  # Se crea la ventana con las dimensiones especificas
 titulo_juego = pygame.display.set_caption('I <3 PUZZLE')  # Se inserta un titulo a la ventana creada
 
-clock = pygame.time.Clock()
 iniciado = True
 while iniciado:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT and puntaje.puntajeFinal !=0:
+            puzzle.finalizarJuego(pantalla_juego)
             iniciado = False
         pantalla_juego.fill((255, 255, 255))  # Dar un color blanco a la pantalla
         imagen.mover()

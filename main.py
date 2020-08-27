@@ -1,10 +1,10 @@
 import pygame
 from abc import *
 import random
-
+import ctypes
 import pygame
 
-NIVEL = 1
+NIVEL = 0
 N = NIVEL + 2
 DIM = int(420 / N)
 DIMENSION = 500, 500  # Se define las dimensiones de la ventana del juego
@@ -243,6 +243,11 @@ iniciado = True
 while iniciado:
     for event in pygame.event.get():
         if event.type == pygame.QUIT :
+            puzzle.finalizarJuego(pantalla_juego)
+            iniciado = False
+        if puntaje.puntajeFinal != 0:
+            ctypes.windll.user32.MessageBoxW(0, "TU PUNTAJE OBTENIDO FUE:"+str(puntaje.puntajeFinal)
+            , "FELICIDADES GANASTE!!", 1) 
             puzzle.finalizarJuego(pantalla_juego)
             iniciado = False
         pantalla_juego.fill((255, 255, 255))  # Dar un color blanco a la pantalla

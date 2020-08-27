@@ -168,8 +168,9 @@ class Contador:
 
     def aumentar(self):
         print(self.numeroMovimientos)
+        self.numeroMovimientos += 1
         verificacion.verificarCondiciones(self.numeroMovimientos)
-        self.numeroMovimientos+=1
+
 
 
 class Colision:
@@ -181,8 +182,8 @@ class Colision:
 
         for pos in self.imagen.getLista():
             if pos.getPosicionActual() == posicion:
-                self.contador.aumentar()
                 self.imagen.intercambiar(posicion)
+                self.contador.aumentar()
 
 
 class Verificacion:
@@ -191,12 +192,14 @@ class Verificacion:
 
     def verificarCondiciones(self, numeroMovimientos):
         cont = 0
+
         for elemento in imagen.getLista():
             if ((elemento.posicion.getX(), elemento.posicion.getY())
                     == elemento.getPosicionActual()):
                 cont += 1
         if cont == len(imagen.getLista()):
             print("GANASTE EN", str(numeroMovimientos))
+
 
 
 class Puzzle:

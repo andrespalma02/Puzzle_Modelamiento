@@ -7,7 +7,7 @@ import pygame
 NIVEL = 1
 N = NIVEL + 2
 DIM = int(420 / N)
-DIMENSION = 1000, 500  # Se define las dimensiones de la ventana del juego
+DIMENSION = 500, 500  # Se define las dimensiones de la ventana del juego
 
 
 class Listener:
@@ -167,6 +167,7 @@ class Contador:
 
     def aumentar(self):
         return self.numeroMovimientos + 1
+        print(self.numeroMovimientos)
 
 
 class Colision:
@@ -191,7 +192,7 @@ class Puzzle:
 
     def iniciarJuego(self, imagen):
         pygame.init()
-        imagen.dibujar(Posicion(0, 0), "plantilla.png")
+        imagen.dibujar(Posicion(0, 0), "Imagen.png")
 
 
 imagen = Imagen()

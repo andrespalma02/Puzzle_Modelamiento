@@ -4,7 +4,7 @@ import random
 import ctypes
 import pygame
 
-NIVEL = 0
+NIVEL = 1
 N = NIVEL + 2
 DIM = int(420 / N)
 DIMENSION = 500, 500  # Se define las dimensiones de la ventana del juego
@@ -169,13 +169,13 @@ class Imagen(Cuadro):
 
 
 class Contador:
-    def __init__(self, puntaje):
+    def __init__(self, verificacion):
         self.numeroMovimientos = int(0)
         self.verificacion = verificacion
 
     def aumentar(self):
         self.numeroMovimientos += 1
-        verificacion.verificarCondiciones(self.numeroMovimientos)
+        self.verificacion.verificarCondiciones(self.numeroMovimientos)
 
 
 class Colision:
@@ -199,11 +199,11 @@ class Verificacion:
     def verificarCondiciones(self, numeroMovimientos):
         cont = 0
 
-        for elemento in imagen.getLista():
+        for elemento in self.imagen.getLista():
             if ((elemento.posicionReferencial.getX(), elemento.posicionReferencial.getY())
                     == (elemento.posicionActual.getX(),elemento.posicionActual.getY())):
                 cont += 1
-        if cont == len(imagen.getLista()):
+        if cont == len(self.imagen.getLista()):
             self.puntaje.calcularPuntaje(numeroMovimientos)
 
 
@@ -215,42 +215,45 @@ class Puntaje:
 
     def calcularPuntaje(self, numeroMovimientos):
         self.puntajeFinal = int(100000 / numeroMovimientos)
+        print(self.puntajeFinal)
 
+#ponle tipo juego en el constructor
+class Puzzle():
 
-class Puzzle:
-
-    def iniciarJuego(self, imagen):
+    def iniciarJuego(self):
         pygame.init()
         clock = pygame.time.Clock()
-        imagen.dibujar(Posicion(0, 0), "ImagenMonitor.png")
+        imagen=Imagen()
+        imagen.dibujar(Posicion(0, 0), "ImagenMonitor.png",)
         imagen.descomponer()
+        puzzle = Puzzle()
+        puntaje = Puntaje(puzzle)
+        verificacion = Verificacion(imagen, puntaje)
+        contador = Contador(verificacion)
+        colision = Colision(contador, imagen)
 
-    def finalizarJuego(self, ventana):
+        pantalla_juego = pygame.display.set_mode(DIMENSION)  # Se crea la ventana con las dimensiones especificas
+        titulo_juego = pygame.display.set_caption('I <3 PUZZLE')  # Se inserta un titulo a la ventana creada
+
+        iniciado = True
+        while iniciado:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    puzzle.finalizarJuego(pantalla_juego)
+                    iniciado = False
+                if puntaje.puntajeFinal != 0:
+                    ctypes.windll.user32.MessageBoxW(0, "TU PUNTAJE OBTENIDO FUE:" + str(puntaje.puntajeFinal)
+                                                     , "FELICIDADES GANASTE!!", 1)
+                    puzzle.finalizarJuego(pantalla_juego)
+                    iniciado = False
+                pantalla_juego.fill((255, 255, 255))  # Dar un color blanco a la pantalla
+                imagen.mover(colision)
+                imagen.actualizarImagen(pantalla_juego)
+                pygame.display.update()
+
+    def finalizarJuego(self):
         pass
-
-puzzle = Puzzle()
-imagen = Imagen()
-puntaje = Puntaje(puzzle)
-verificacion = Verificacion(imagen,puntaje)
-contador = Contador(verificacion)
-colision = Colision(contador, imagen)
-puzzle.iniciarJuego(imagen)
-
-pantalla_juego = pygame.display.set_mode(DIMENSION)  # Se crea la ventana con las dimensiones especificas
-titulo_juego = pygame.display.set_caption('I <3 PUZZLE')  # Se inserta un titulo a la ventana creada
-
-iniciado = True
-while iniciado:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT :
-            puzzle.finalizarJuego(pantalla_juego)
-            iniciado = False
-        if puntaje.puntajeFinal != 0:
-            ctypes.windll.user32.MessageBoxW(0, "TU PUNTAJE OBTENIDO FUE:"+str(puntaje.puntajeFinal)
-            , "FELICIDADES GANASTE!!", 1) 
-            puzzle.finalizarJuego(pantalla_juego)
-            iniciado = False
-        pantalla_juego.fill((255, 255, 255))  # Dar un color blanco a la pantalla
-        imagen.mover(colision)
-        imagen.actualizarImagen(pantalla_juego)
-        pygame.display.update()
+    def reiniciarJuego(self):
+        pass
+puzzle=Puzzle()
+puzzle.iniciarJuego()

@@ -4,7 +4,6 @@ import random
 
 import pygame
 
-
 class Listener:
     @staticmethod
     def detectar() -> tuple:

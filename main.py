@@ -4,7 +4,7 @@ import random
 
 import pygame
 
-NIVEL = 1
+NIVEL = 0
 N = NIVEL + 2
 DIM = int(420 / N)
 DIMENSION = 500, 500  # Se define las dimensiones de la ventana del juego
@@ -69,13 +69,13 @@ class CuadroVacio(Cuadro):
         y = self.posicion.getY()
 
         if keys[pygame.K_LEFT]:
-            colision.verificarColision((x - DIM, y))
-        if keys[pygame.K_RIGHT]:
             colision.verificarColision((x + DIM, y))
+        if keys[pygame.K_RIGHT]:
+            colision.verificarColision((x - DIM, y))
         if keys[pygame.K_UP]:
-            colision.verificarColision((x, y - DIM))
-        if keys[pygame.K_DOWN]:
             colision.verificarColision((x, y + DIM))
+        if keys[pygame.K_DOWN]:
+            colision.verificarColision((x, y - DIM))
 
 
 class FragmentoImagen(Cuadro):
@@ -162,12 +162,14 @@ class Imagen(Cuadro):
 
 
 class Contador:
-    def __init__(self):
-        self.numeroMovimientos = int(0)
+    def __init__(self, puntaje):
+        self.numeroMovimientos = int(1)
+        self.verificacion = verificacion
 
     def aumentar(self):
-        return self.numeroMovimientos + 1
         print(self.numeroMovimientos)
+        verificacion.verificarCondiciones(self.numeroMovimientos)
+        self.numeroMovimientos+=1
 
 
 class Colision:
@@ -183,9 +185,18 @@ class Colision:
                 self.imagen.intercambiar(posicion)
 
 
-class Puntaje:
-    def __init__(self, puntaje):
-        self.puntaje = puntaje
+class Verificacion:
+    def __init__(self, imagen):
+        self.imagen = imagen
+
+    def verificarCondiciones(self, numeroMovimientos):
+        cont = 0
+        for elemento in imagen.getLista():
+            if ((elemento.posicion.getX(), elemento.posicion.getY())
+                    == elemento.getPosicionActual()):
+                cont += 1
+        if cont == len(imagen.getLista()):
+            print("GANASTE EN", str(numeroMovimientos))
 
 
 class Puzzle:
@@ -195,14 +206,17 @@ class Puzzle:
         imagen.dibujar(Posicion(0, 0), "Imagen.png")
 
 
-imagen = Imagen()
-contador = Contador()
 puzzle = Puzzle()
+imagen = Imagen()
 puzzle.iniciarJuego(imagen)
+imagen.descomponer()
+verificacion = Verificacion(imagen)
+contador = Contador(verificacion)
 colision = Colision(contador, imagen)
+
 pantalla_juego = pygame.display.set_mode(DIMENSION)  # Se crea la ventana con las dimensiones especificas
 titulo_juego = pygame.display.set_caption('I <3 PUZZLE')  # Se inserta un titulo a la ventana creada
-imagen.descomponer()
+
 clock = pygame.time.Clock()
 iniciado = True
 while iniciado:

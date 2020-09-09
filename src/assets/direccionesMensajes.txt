@@ -1,0 +1,6 @@
+img/msjLaberinto.png,laberinto
+img/msjPuzzle.png,puzzle
+img/msjRutaMaya.png,ruta
+img/msjSnake.png,snake
+img/msjEvitandoVirus.png,virus
+img/pantallaInicio.jpg,inicio

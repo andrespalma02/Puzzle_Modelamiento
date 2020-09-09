@@ -1,0 +1,3 @@
+laberinto/img/inicioLaberinto.png,instrucciones
+laberinto/img/GameOver.png,perdida
+laberinto/img/Victoria.png,victoria
